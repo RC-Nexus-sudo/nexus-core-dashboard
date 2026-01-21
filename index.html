@@ -7,50 +7,56 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Firebase SDK Modules (Version 10.7.1 stable) -->
-    <!-- Firebase App (Version COMPAT pour réseaux sécurisés) -->
+    <!-- 1. CHARGEMENT DES LIBS (Gardez-les bien en haut) -->
 <script src="https://www.gstatic.com"></script>
-<!-- Firebase Firestore (Version COMPAT) -->
 <script src="https://www.gstatic.com"></script>
 
+<!-- 2. LOGIQUE NEXUS AVEC SÉCURITÉ -->
 <script>
-  // Configuration NEXUS
-  const firebaseConfig = {
-    apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
-    authDomain: "nexus-core-bfe3a.firebaseapp.com",
-    projectId: "nexus-core-bfe3a",
-    storageBucket: "nexus-core-bfe3a.firebasestorage.app",
-    messagingSenderId: "823704172120",
-    appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
-  };
+  function startNexusCloud() {
+    // Vérification de l'existence de l'objet firebase
+    if (typeof firebase === 'undefined') {
+      console.warn("[RETRY] Attente du moteur Firebase...");
+      setTimeout(startNexusCloud, 100); // Réessaie dans 100ms
+      return;
+    }
 
-  // Initialisation standard (non-modulaire)
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  window.nexusDb = db; // Pour vos autres fonctions
+    const firebaseConfig = {
+      apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
+      authDomain: "nexus-core-bfe3a.firebaseapp.com",
+      projectId: "nexus-core-bfe3a",
+      storageBucket: "nexus-core-bfe3a.firebasestorage.app",
+      messagingSenderId: "823704172120",
+      appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
+    };
 
-  console.log("[SYSTEM] Initialisation Firebase COMPAT réussie.");
+    // Initialisation
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    window.nexusDb = db;
 
-  // Écouteur de fichiers avec gestion d'erreur visuelle
-  db.collection("files").orderBy("name").onSnapshot((snapshot) => {
+    console.log("[SYSTEM] Firebase Engine Initialisé avec succès.");
+
+    // Synchronisation des fichiers
+    db.collection("files").orderBy("name").onSnapshot((snapshot) => {
       const fileList = document.getElementById('file-list');
-      if (!fileList) return;
-      
-      fileList.innerHTML = ''; 
-      if (snapshot.empty) {
-          fileList.innerHTML = '<p class="opacity-30 text-[9px] p-2">SATELLITE_LINK_EMPTY</p>';
-      }
-
-      snapshot.forEach((doc) => {
+      if (fileList) {
+        fileList.innerHTML = '';
+        snapshot.forEach((doc) => {
           const file = doc.data();
-          const item = document.createElement('div');
-          item.className = "flex justify-between p-2 hover:bg-green-500/10 cursor-pointer rounded-xl transition group";
-          item.innerHTML = `<span><i class="fa-solid fa-file-shield mr-2 opacity-40"></i>${file.name}</span><span class="opacity-30 text-[8px]">${file.size || '0KB'}</span>`;
-          fileList.appendChild(item);
-      });
-      console.log("[FIREBASE] FileSystem synchronisé avec le Cloud.");
-  }, (error) => {
-      console.error("[CRITICAL] Erreur de permission Cloud:", error);
-  });
+          fileList.innerHTML += `
+            <div class="flex justify-between p-2 hover:bg-green-500/10 rounded-xl transition cursor-pointer">
+                <span><i class="fa-solid fa-file-code mr-2 opacity-50"></i>${file.name}</span>
+                <span class="opacity-30 text-[9px]">${file.size || '0KB'}</span>
+            </div>`;
+        });
+        console.log("[FIREBASE] FileSystem Live.");
+      }
+    });
+  }
+
+  // Lancement dès que le DOM est prêt
+  document.addEventListener('DOMContentLoaded', startNexusCloud);
 </script>
 
 
@@ -301,5 +307,6 @@
 
 </body>
 </html>
+
 
 
