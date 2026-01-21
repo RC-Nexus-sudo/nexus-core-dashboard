@@ -3,78 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS CORE v8.5 - SUPREME OPERATOR</title>
+    <title>NEXUS CORE v8.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Firebase SDK Modules (Version 10.7.1 stable) -->
-    <!-- 1. CHARGEMENT DES LIBS (Gardez-les bien en haut) -->
-<script src="https://www.gstatic.com"></script>
-<script src="https://www.gstatic.com"></script>
-
-<!-- 2. LOGIQUE NEXUS AVEC SÉCURITÉ -->
-<script>
-  function startNexusCloud() {
-    // Vérification de l'existence de l'objet firebase
-    if (typeof firebase === 'undefined') {
-      console.warn("[RETRY] Attente du moteur Firebase...");
-      setTimeout(startNexusCloud, 100); // Réessaie dans 100ms
-      return;
-    }
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
-      authDomain: "nexus-core-bfe3a.firebaseapp.com",
-      projectId: "nexus-core-bfe3a",
-      storageBucket: "nexus-core-bfe3a.firebasestorage.app",
-      messagingSenderId: "823704172120",
-      appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
-    };
-
-    // Initialisation
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    window.nexusDb = db;
-
-    console.log("[SYSTEM] Firebase Engine Initialisé avec succès.");
-
-    // Synchronisation des fichiers
-    db.collection("files").orderBy("name").onSnapshot((snapshot) => {
-      const fileList = document.getElementById('file-list');
-      if (fileList) {
-        fileList.innerHTML = '';
-        snapshot.forEach((doc) => {
-          const file = doc.data();
-          fileList.innerHTML += `
-            <div class="flex justify-between p-2 hover:bg-green-500/10 rounded-xl transition cursor-pointer">
-                <span><i class="fa-solid fa-file-code mr-2 opacity-50"></i>${file.name}</span>
-                <span class="opacity-30 text-[9px]">${file.size || '0KB'}</span>
-            </div>`;
-        });
-        console.log("[FIREBASE] FileSystem Live.");
-      }
-    });
-  }
-
-  // Lancement dès que le DOM est prêt
-  document.addEventListener('DOMContentLoaded', startNexusCloud);
-</script>
-
-
-    <!-- Font Awesome (Lien complet) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
-    
+
+    <!-- Firebase App & Firestore (Versions Compatibles) -->
+    <script src="https://www.gstatic.com"></script>
+    <script src="https://www.gstatic.com"></script>
+
+    <script>
+        // Ce script s'exécute dès que Firebase est chargé
+        window.onload = function() {
+            try {
+                const firebaseConfig = {
+                    apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
+                    authDomain: "nexus-core-bfe3a.firebaseapp.com",
+                    projectId: "nexus-core-bfe3a",
+                    storageBucket: "nexus-core-bfe3a.firebasestorage.app",
+                    messagingSenderId: "823704172120",
+                    appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
+                };
+
+                // Initialisation
+                firebase.initializeApp(firebaseConfig);
+                const db = firebase.firestore();
+                window.nexusDb = db;
+                console.log("✅ [SYSTEM] Moteur Firebase opérationnel");
+
+                // Écouteur de fichiers
+                db.collection("files").onSnapshot((snapshot) => {
+                    const fileList = document.getElementById('file-list');
+                    if (fileList) {
+                        fileList.innerHTML = '';
+                        if (snapshot.empty) {
+                            fileList.innerHTML = '<p class="text-[9px] opacity-30 p-2">BASE_DE_DONNEES_VIDE</p>';
+                        }
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const div = document.createElement('div');
+                            div.className = "flex justify-between p-2 border-b border-green-900/20 text-[10px]";
+                            div.innerHTML = `<span><i class="fa-solid fa-file-code mr-2 opacity-50"></i>${data.name || 'Sans nom'}</span><span class="opacity-30">${data.size || '0KB'}</span>`;
+                            fileList.appendChild(div);
+                        });
+                        console.log("📂 [SYSTEM] Fichiers synchronisés");
+                    }
+                }, (error) => {
+                    console.error("❌ Erreur Firestore:", error.message);
+                });
+
+            } catch (err) {
+                console.error("❌ Erreur Initialisation:", err.message);
+            }
+            
+            // Lancement des animations (Matrix, etc.)
+            if (typeof startAnimations === "function") startAnimations();
+        };
+    </script>
+
     <style>
-        :root { --matrix-green: #00FF41; --matrix-red: #FF3131; --bg-dark: #020502; }
-        body { background-color: var(--bg-dark); color: var(--matrix-green); font-family: 'Inter', monospace; margin: 0; overflow: hidden; height: 100vh; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.15; mix-blend-mode: screen; }
-        .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255,0,0,0.02), rgba(0,255,0,0.01), rgba(0,0,255,0.02));
-            background-size: 100% 3px, 3px 100%; }
-        .bento-hybrid { background: rgba(0, 20, 0, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 65, 0.2); border-radius: 40px; position: relative; z-index: 10; transition: all 0.3s ease; }
-        .bento-hybrid:hover { border-color: var(--matrix-green); box-shadow: 0 0 30px rgba(0, 255, 65, 0.2); transform: scale(1.01); }
-        .radar-container { width: 150px; height: 150px; border: 2px solid var(--matrix-green); border-radius: 50%; position: relative; overflow: hidden; }
-        .radar-hand { position: absolute; width: 50%; height: 2px; background: var(--matrix-green); top: 50%; left: 50%; transform-origin: left; animation: sweep 4s linear infinite; box-shadow: 0 0 10px var(--matrix-green); }
-        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        :root { --matrix-green: #00FF41; --bg-dark: #020502; }
+        body { background-color: var(--bg-dark); color: var(--matrix-green); font-family: monospace; margin: 0; overflow: hidden; }
+        .bento-hybrid { background: rgba(0, 20, 0, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 65, 0.2); border-radius: 20px; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.15; }
         .custom-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -307,6 +297,7 @@
 
 </body>
 </html>
+
 
 
 
