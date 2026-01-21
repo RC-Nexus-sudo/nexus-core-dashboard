@@ -116,10 +116,12 @@
     <script>
         // --- 1. FIREBASE START ---
         function startNexusCloud() {
-            if (typeof firebase === 'undefined') {
-                setTimeout(startNexusCloud, 500);
-                return;
-            }
+    // Vérification de sécurité ultime
+    if (typeof firebase === 'undefined' || !firebase.app) {
+        console.warn("Moteur Firebase non détecté. Relancement dans 500ms...");
+        setTimeout(startNexusCloud, 500);
+        return;
+    }
             
             const config = {
                 apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
@@ -230,3 +232,4 @@
     </script>
 </body>
 </html>
+
