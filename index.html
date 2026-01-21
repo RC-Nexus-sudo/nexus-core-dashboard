@@ -115,13 +115,15 @@
 
     <script>
         // --- 1. FIREBASE START ---
-        function startNexusCloud() {
-    // Vérification de sécurité ultime
-    if (typeof firebase === 'undefined' || !firebase.app) {
-        console.warn("Moteur Firebase non détecté. Relancement dans 500ms...");
-        setTimeout(startNexusCloud, 500);
-        return;
-    }
+     function startNexusCloud() {
+        // Détection de l'objet Firebase (version Cloudflare)
+        const fb = window.firebase;
+        
+        if (!fb) {
+            console.warn("Moteur Firebase bloqué ou non chargé. Tentative via source alternative...");
+            // Si même après 2 secondes ça ne charge pas, on affiche l'erreur visuelle
+            return;
+        }
             
             const config = {
                 apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
@@ -132,30 +134,40 @@
                 appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
             };
 
-            firebase.initializeApp(config);
-            const db = firebase.firestore();
-
-            // FORCE LE MODE LONG POLLING (Anti-blocage réseau)
-            db.settings({ experimentalForceLongPolling: true });
+            try {
+            if (!fb.apps.length) {
+                fb.initializeApp(config);
+            }
             
+            const db = fb.firestore();
+            
+            // INDISPENSABLE pour les réseaux sécurisés :
+            db.settings({ experimentalForceLongPolling: true });
+
             window.nexusDb = db;
             console.log("✅ Système Firebase : Liaison établie.");
 
+            // Écouteur de fichiers
             db.collection("files").onSnapshot(snap => {
                 const list = document.getElementById('file-list');
-                if(!list) return;
-                list.innerHTML = '';
-                list.classList.remove('italic', 'opacity-50');
-                if(snap.empty) list.innerHTML = "AUCUN FICHIER DISTANT";
-                snap.forEach(doc => {
-                    const f = doc.data();
-                    list.innerHTML += `<div class="flex justify-between p-2 hover:bg-green-500/10 rounded-xl transition cursor-pointer">
-                        <span><i class="fa-solid fa-file-code mr-2 opacity-40"></i>${f.name}</span>
-                        <span class="opacity-30">${f.size || '0KB'}</span>
-                    </div>`;
-                });
-            }, err => console.error("Firestore Error:", err));
+                if(list) {
+                    list.innerHTML = '';
+                    snap.forEach(doc => {
+                        const f = doc.data();
+                        list.innerHTML += `<div class="p-2 border-b border-green-900/30 text-[10px]">${f.name || 'Fichier'}</div>`;
+                    });
+                }
+            }, (err) => {
+                console.error("Erreur Firestore :", err.message);
+            });
+
+        } catch (e) {
+            console.error("Erreur lors de l'initialisation :", e.message);
         }
+    }
+
+    // On lance la détection après 1 seconde pour laisser le temps au CDN de répondre
+    setTimeout(startNexusCloud, 1000);
 
         // --- 2. ISOLATED NETWORK (No crash if failed) ---
         async function initNet() {
@@ -236,6 +248,7 @@
     </script>
 </body>
 </html>
+
 
 
 
