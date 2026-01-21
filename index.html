@@ -7,11 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Firebase SDK Modules (Version 10.7.1 stable) -->
-    <script type="module">
-      // IMPORTATIONS COMPLÈTES (OBLIGATOIRE EN 2026)
-  import { initializeApp } from "https://www.gstatic.com";
-  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com";
+    <!-- Firebase App (Version COMPAT pour réseaux sécurisés) -->
+<script src="https://www.gstatic.com"></script>
+<!-- Firebase Firestore (Version COMPAT) -->
+<script src="https://www.gstatic.com"></script>
 
+<script>
+  // Configuration NEXUS
   const firebaseConfig = {
     apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
     authDomain: "nexus-core-bfe3a.firebaseapp.com",
@@ -21,22 +23,36 @@
     appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  window.nexusDb = db; // Pour que les autres scripts voient la base de données
+  // Initialisation standard (non-modulaire)
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  window.nexusDb = db; // Pour vos autres fonctions
 
-  // Écouteur de fichiers Cloud
-  onSnapshot(query(collection(db, "files"), orderBy("name")), (snapshot) => {
+  console.log("[SYSTEM] Initialisation Firebase COMPAT réussie.");
+
+  // Écouteur de fichiers avec gestion d'erreur visuelle
+  db.collection("files").orderBy("name").onSnapshot((snapshot) => {
       const fileList = document.getElementById('file-list');
-      if (fileList) {
-          fileList.innerHTML = '';
-          snapshot.forEach((doc) => {
-              const file = doc.data();
-              fileList.innerHTML += `<div class="p-2 border-b border-green-900/30 text-[10px]">${file.name}</div>`;
-          });
+      if (!fileList) return;
+      
+      fileList.innerHTML = ''; 
+      if (snapshot.empty) {
+          fileList.innerHTML = '<p class="opacity-30 text-[9px] p-2">SATELLITE_LINK_EMPTY</p>';
       }
+
+      snapshot.forEach((doc) => {
+          const file = doc.data();
+          const item = document.createElement('div');
+          item.className = "flex justify-between p-2 hover:bg-green-500/10 cursor-pointer rounded-xl transition group";
+          item.innerHTML = `<span><i class="fa-solid fa-file-shield mr-2 opacity-40"></i>${file.name}</span><span class="opacity-30 text-[8px]">${file.size || '0KB'}</span>`;
+          fileList.appendChild(item);
+      });
+      console.log("[FIREBASE] FileSystem synchronisé avec le Cloud.");
+  }, (error) => {
+      console.error("[CRITICAL] Erreur de permission Cloud:", error);
   });
-    </script>
+</script>
+
 
     <!-- Font Awesome (Lien complet) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
@@ -285,4 +301,5 @@
 
 </body>
 </html>
+
 
