@@ -134,6 +134,10 @@
 
             firebase.initializeApp(config);
             const db = firebase.firestore();
+
+            // FORCE LE MODE LONG POLLING (Anti-blocage réseau)
+            db.settings({ experimentalForceLongPolling: true });
+            
             window.nexusDb = db;
             console.log("✅ Système Firebase : Liaison établie.");
 
@@ -232,4 +236,5 @@
     </script>
 </body>
 </html>
+
 
