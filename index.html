@@ -8,50 +8,34 @@
     
     <!-- Firebase SDK Modules (Version 10.7.1 stable) -->
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com";
-      import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com";
+      // IMPORTATIONS COMPLÈTES (OBLIGATOIRE EN 2026)
+  import { initializeApp } from "https://www.gstatic.com";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
-        authDomain: "nexus-core-bfe3a.firebaseapp.com",
-        projectId: "nexus-core-bfe3a",
-        storageBucket: "nexus-core-bfe3a.firebasestorage.app",
-        messagingSenderId: "823704172120",
-        appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
-      };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
+    authDomain: "nexus-core-bfe3a.firebaseapp.com",
+    projectId: "nexus-core-bfe3a",
+    storageBucket: "nexus-core-bfe3a.firebasestorage.app",
+    messagingSenderId: "823704172120",
+    appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
+  };
 
-      // Initialisation unique
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      window.nexusDb = db; // Crucial pour l'accès global
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window.nexusDb = db; // Pour que les autres scripts voient la base de données
 
-      console.log("[FIREBASE] Liaison Cloud établie avec succès au 21/01/2026.");
-
-      // Écouteur en temps réel pour les fichiers
-      onSnapshot(query(collection(db, "files"), orderBy("name")), (snapshot) => {
-          const fileList = document.getElementById('file-list');
-          if (fileList) {
-              fileList.innerHTML = '';
-              snapshot.forEach((doc) => {
-                  const file = doc.data();
-                  const item = document.createElement('div');
-                  item.className = "flex justify-between p-3 hover:bg-green-500/10 cursor-pointer rounded-2xl border border-transparent hover:border-green-500/30 transition group";
-                  item.innerHTML = `<span><i class="fa-solid fa-file-shield mr-3 opacity-40 group-hover:text-green-500"></i>${file.name}</span><span class="opacity-30 text-[9px] uppercase">${file.size || '0KB'}</span>`;
-                  item.onclick = () => console.log(`[CLOUD] Accès distant : ${file.name}`);
-                  fileList.appendChild(item);
-              });
-          }
-      });
-
-      // Écouteur pour les alertes de sécurité
-      onSnapshot(query(collection(db, "alerts"), orderBy("timestamp", "desc"), limit(1)), (snapshot) => {
+  // Écouteur de fichiers Cloud
+  onSnapshot(query(collection(db, "files"), orderBy("name")), (snapshot) => {
+      const fileList = document.getElementById('file-list');
+      if (fileList) {
+          fileList.innerHTML = '';
           snapshot.forEach((doc) => {
-              const alert = doc.data();
-              const ipDisplay = document.getElementById('ip-external');
-              if (ipDisplay) ipDisplay.innerText = alert.ip || "PROTECTED";
-              console.warn(`[SECURITY] Alerte Cloud : ${alert.type}`);
+              const file = doc.data();
+              fileList.innerHTML += `<div class="p-2 border-b border-green-900/30 text-[10px]">${file.name}</div>`;
           });
-      });
+      }
+  });
     </script>
 
     <!-- Font Awesome (Lien complet) -->
@@ -301,3 +285,4 @@
 
 </body>
 </html>
+
