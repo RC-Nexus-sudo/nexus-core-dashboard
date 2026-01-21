@@ -3,75 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS CORE v8.5</title>
+    <title>NEXUS CORE v8.5 - SUPREME OPERATOR</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
-
-    <!-- Firebase App & Firestore (Versions Compatibles) -->
+    
+    <!-- FIREBASE COMPAT (Versions stables 2026) -->
     <script src="https://www.gstatic.com"></script>
     <script src="https://www.gstatic.com"></script>
-
-    <script>
-        // Ce script s'exécute dès que Firebase est chargé
-        window.onload = function() {
-            alert("NEXUS_CHECK");
-            try {
-                const firebaseConfig = {
-                    apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
-                    authDomain: "nexus-core-bfe3a.firebaseapp.com",
-                    projectId: "nexus-core-bfe3a",
-                    storageBucket: "nexus-core-bfe3a.firebasestorage.app",
-                    messagingSenderId: "823704172120",
-                    appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
-                };
-
-                // Initialisation
-                firebase.initializeApp(firebaseConfig);
-                const db = firebase.firestore();
-                window.nexusDb = db;
-                console.log("✅ [SYSTEM] Moteur Firebase opérationnel");
-
-                // Écouteur de fichiers
-                db.collection("files").onSnapshot((snapshot) => {
-                    const fileList = document.getElementById('file-list');
-                    if (fileList) {
-                        fileList.innerHTML = '';
-                        if (snapshot.empty) {
-                            fileList.innerHTML = '<p class="text-[9px] opacity-30 p-2">BASE_DE_DONNEES_VIDE</p>';
-                        }
-                        snapshot.forEach((doc) => {
-                            const data = doc.data();
-                            const div = document.createElement('div');
-                            div.className = "flex justify-between p-2 border-b border-green-900/20 text-[10px]";
-                            div.innerHTML = `<span><i class="fa-solid fa-file-code mr-2 opacity-50"></i>${data.name || 'Sans nom'}</span><span class="opacity-30">${data.size || '0KB'}</span>`;
-                            fileList.appendChild(div);
-                        });
-                        console.log("📂 [SYSTEM] Fichiers synchronisés");
-                    }
-                }, (error) => {
-                    console.error("❌ Erreur Firestore:", error.message);
-                });
-
-            } catch (err) {
-                console.error("❌ Erreur Initialisation:", err.message);
-            }
-            
-            // Lancement des animations (Matrix, etc.)
-            if (typeof startAnimations === "function") startAnimations();
-        };
-    </script>
 
     <style>
-        :root { --matrix-green: #00FF41; --bg-dark: #020502; }
-        body { background-color: var(--bg-dark); color: var(--matrix-green); font-family: monospace; margin: 0; overflow: hidden; }
-        .bento-hybrid { background: rgba(0, 20, 0, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 65, 0.2); border-radius: 20px; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.15; }
+        :root { --matrix-green: #00FF41; --matrix-red: #FF3131; --bg-dark: #020502; }
+        body { background-color: var(--bg-dark); color: var(--matrix-green); font-family: 'Inter', monospace; margin: 0; overflow: hidden; height: 100vh; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.15; mix-blend-mode: screen; }
+        .scanline { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255,0,0,0.02), rgba(0,255,0,0.01), rgba(0,255,0,0.02));
+            background-size: 100% 3px, 3px 100%; }
+        .bento-hybrid { background: rgba(0, 20, 0, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(0, 255, 65, 0.2); border-radius: 40px; position: relative; z-index: 10; transition: all 0.3s ease; }
+        .bento-hybrid:hover { border-color: var(--matrix-green); box-shadow: 0 0 30px rgba(0, 255, 65, 0.2); transform: scale(1.01); }
+        .radar-container { width: 150px; height: 150px; border: 2px solid var(--matrix-green); border-radius: 50%; position: relative; overflow: hidden; }
+        .radar-hand { position: absolute; width: 50%; height: 2px; background: var(--matrix-green); top: 50%; left: 50%; transform-origin: left; animation: sweep 4s linear infinite; box-shadow: 0 0 10px var(--matrix-green); }
+        @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .custom-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
 
 <body class="p-6 flex flex-col">
-
     <canvas id="matrix-canvas"></canvas>
     <div class="scanline"></div>
 
@@ -82,18 +39,17 @@
             </div>
             <div>
                 <h1 class="text-2xl font-black tracking-tighter text-white">NEXUS<span class="text-green-500">.CORE</span></h1>
-                <p class="text-[10px] opacity-60 font-mono" id="system-clock">19 JANVIER 2026 // 17:27:00</p>
+                <p class="text-[10px] opacity-60 font-mono" id="system-clock">21 JANVIER 2026 // --:--:--</p>
             </div>
         </div>
         <div class="text-right text-[10px] font-mono">
-            <p>LOCATION: <span id="header-loc" class="text-white">SCHAERBEEK, BE</span></p>
-            <p class="text-red-500 animate-pulse font-bold uppercase">Alert: Security Protocol Active</p>
+            <p>LOCATION: <span id="header-loc" class="text-white">SCANNING...</span></p>
+            <p class="text-red-500 animate-pulse font-bold uppercase">Security Liaison Active</p>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto w-full grid grid-cols-12 gap-5 flex-1 mb-36 overflow-y-auto pr-2 custom-scroll">
-        
-        <!-- BLOC 1: RADAR & GEO -->
+        <!-- RADAR -->
         <div class="col-span-12 lg:col-span-4 bento-hybrid p-6 flex flex-col items-center">
             <h3 class="text-[10px] uppercase tracking-widest mb-4">Satellite Liaison</h3>
             <div class="radar-container">
@@ -102,12 +58,12 @@
                 <div class="absolute inset-0 flex items-center justify-center opacity-10"><i class="fa-solid fa-earth-europe text-6xl"></i></div>
             </div>
             <div class="w-full mt-4 text-[10px] font-mono space-y-1">
-                <div class="flex justify-between border-b border-green-900/30 pb-1"><span>CITY:</span> <span id="geo-city" class="text-white">SCANNING...</span></div>
+                <div class="flex justify-between border-b border-green-900/30 pb-1"><span>CITY:</span> <span id="geo-city" class="text-white">---</span></div>
                 <div class="flex justify-between"><span>IP_EXT:</span> <span id="ip-external" class="text-white">0.0.0.0</span></div>
             </div>
         </div>
 
-        <!-- BLOC 2: AUDIO SPECTRUM (NEW) -->
+        <!-- AUDIO -->
         <div class="col-span-12 lg:col-span-4 bento-hybrid p-6 flex flex-col justify-between">
             <div class="flex justify-between items-center mb-2">
                 <h3 class="text-[10px] uppercase tracking-widest">Acoustic Monitor</h3>
@@ -121,13 +77,15 @@
             </button>
         </div>
 
-        <!-- BLOC 3: FILE SYSTEM -->
+        <!-- FILE SYSTEM CLOUD -->
         <div class="col-span-12 lg:col-span-4 bento-hybrid p-6">
-            <h3 class="text-[10px] uppercase tracking-widest mb-4">Nexus_FileSystem</h3>
-            <div id="file-list" class="space-y-1 h-40 overflow-y-auto font-mono text-[10px] custom-scroll"></div>
+            <h3 class="text-[10px] uppercase tracking-widest mb-4">Nexus_FileSystem (Cloud)</h3>
+            <div id="file-list" class="space-y-1 h-40 overflow-y-auto font-mono text-[10px] custom-scroll italic opacity-50">
+                Liaison en cours...
+            </div>
         </div>
 
-        <!-- BLOC 4: HARDWARE MONITOR (LARGE) -->
+        <!-- HARDWARE -->
         <div class="col-span-12 bento-hybrid p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
                 <p class="text-[10px] opacity-50 uppercase mb-2">CPU_Thread_Load</p>
@@ -137,12 +95,11 @@
             <div class="border-l border-green-900/30 pl-8">
                 <p class="text-[10px] opacity-50 uppercase mb-2">Logical_Processors</p>
                 <p id="cpu-cores" class="text-3xl font-bold text-white">--</p>
-                <p class="text-[10px] text-blue-400 mt-2">v8.5_DETECTED</p>
             </div>
             <div class="border-l border-green-900/30 pl-8">
                 <p class="text-[10px] opacity-50 uppercase mb-2">Memory_JS</p>
                 <p id="stat-heap" class="text-3xl font-bold text-white">-- MB</p>
-                <p class="text-[10px] text-green-500 mt-2 font-bold uppercase" id="local-id">Local_Station</p>
+                <p class="text-[10px] text-green-500 mt-2 font-bold uppercase" id="local-id">Station_Node_Active</p>
             </div>
         </div>
     </main>
@@ -157,150 +114,119 @@
     </footer>
 
     <script>
-    // --- 1. CONFIGURATION INITIALE & TERMINAL ---
-    const logDisplay = document.getElementById('real-console-logs');
+        // --- 1. FIREBASE START ---
+        function startNexusCloud() {
+            if (typeof firebase === 'undefined') {
+                setTimeout(startNexusCloud, 500);
+                return;
+            }
+            
+            const config = {
+                apiKey: "AIzaSyAISsXH1mIvoPbIKKtiFCsGg26bfn6mhrI",
+                authDomain: "nexus-core-bfe3a.firebaseapp.com",
+                projectId: "nexus-core-bfe3a",
+                storageBucket: "nexus-core-bfe3a.firebasestorage.app",
+                messagingSenderId: "823704172120",
+                appId: "1:823704172120:web:2cdc9171ea3a0dad447c2d"
+            };
 
-    // Fonction unique pour l'affichage visuel (indispensable)
-    function addVisualLog(msg, type = 'log') {
-        if (!logDisplay) return;
-        const p = document.createElement('p');
-        p.className = type === 'warn' ? 'text-yellow-500' : (type === 'error' ? 'text-red-500' : 'text-green-400/80');
-        p.innerHTML = `<span class="opacity-40">[${new Date().toLocaleTimeString()}]</span> > ${msg}`;
-        logDisplay.appendChild(p);
-        if (logDisplay.childNodes.length > 6) logDisplay.removeChild(logDisplay.firstChild);
-    }
+            firebase.initializeApp(config);
+            const db = firebase.firestore();
+            window.nexusDb = db;
+            console.log("✅ Système Firebase : Liaison établie.");
 
-    // --- 2. FIREBASE CLOUD LOGS (SÉCURISÉ) ---
-    // Note : addDoc et collection sont importés dans le module du Head
-    async function pushLogToCloud(msg, type) {
-        // On vérifie que NexusDb est prêt et on évite de logger les erreurs Firebase elles-mêmes
-        if (!window.nexusDb || msg.includes("Firebase")) return;
-        
-        try {
-            // Import dynamique pour utiliser les fonctions Firebase dans un script classique
-            const { collection, addDoc } = await import("https://www.gstatic.com");
-            await addDoc(collection(window.nexusDb, "system_logs"), {
-                message: msg,
-                type: type,
-                timestamp: new Date(),
-                origin: "Nexus_Main_Terminal"
+            db.collection("files").onSnapshot(snap => {
+                const list = document.getElementById('file-list');
+                if(!list) return;
+                list.innerHTML = '';
+                list.classList.remove('italic', 'opacity-50');
+                if(snap.empty) list.innerHTML = "AUCUN FICHIER DISTANT";
+                snap.forEach(doc => {
+                    const f = doc.data();
+                    list.innerHTML += `<div class="flex justify-between p-2 hover:bg-green-500/10 rounded-xl transition cursor-pointer">
+                        <span><i class="fa-solid fa-file-code mr-2 opacity-40"></i>${f.name}</span>
+                        <span class="opacity-30">${f.size || '0KB'}</span>
+                    </div>`;
+                });
+            }, err => console.error("Firestore Error:", err));
+        }
+
+        // --- 2. ISOLATED NETWORK (No crash if failed) ---
+        async function initNet() {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000);
+                const res = await fetch('https://ipapi.co', { signal: controller.signal });
+                const data = await res.json();
+                document.getElementById('ip-external').innerText = data.ip;
+                document.getElementById('geo-city').innerText = data.city.toUpperCase();
+                document.getElementById('header-loc').innerText = data.city.toUpperCase() + ", " + data.country;
+                document.getElementById('ip-target').classList.remove('hidden');
+                console.log("Liaison IP : OK");
+            } catch(e) {
+                console.warn("Liaison IP : ECHEC (Mode protégé)");
+                document.getElementById('ip-external').innerText = "PROTECTED";
+                document.getElementById('geo-city').innerText = "OFFLINE_NODE";
+            }
+        }
+
+        // --- 3. HARDWARE & ANIM ---
+        function updateHardware() {
+            document.getElementById('cpu-cores').innerText = navigator.hardwareConcurrency || 8;
+            let usage = Math.floor(Math.random() * 20 + 30);
+            document.getElementById('cpu-usage').innerText = usage;
+            const bars = document.getElementById('cpu-bars');
+            bars.innerHTML = '';
+            for (let i = 0; i < 12; i++) {
+                const active = i < (usage / 8);
+                bars.innerHTML += `<div class="h-6 w-2 rounded-full ${active ? 'bg-green-500' : 'bg-green-900/20'}"></div>`;
+            }
+            if (performance.memory) document.getElementById('stat-heap').innerText = Math.round(performance.memory.usedJSHeapSize / 1048576) + " MB";
+        }
+
+        // MATRIX
+        const mCanvas = document.getElementById('matrix-canvas');
+        const mCtx = mCanvas.getContext('2d');
+        mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+        const drops = Array(Math.floor(mCanvas.width / 16)).fill(1);
+        function drawMatrix() {
+            mCtx.fillStyle = "rgba(2, 5, 2, 0.1)"; mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+            mCtx.fillStyle = "#00FF41"; mCtx.font = "15px monospace";
+            drops.forEach((y, i) => {
+                mCtx.fillText(Math.floor(Math.random() * 2), i * 16, y * 16);
+                if (y * 16 > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
             });
-        } catch (e) {
-            // On ne loggue pas l'erreur ici pour éviter la boucle infinie
         }
-    }
+        setInterval(drawMatrix, 50);
 
-    // Hook de console unique et protégé
-    ['log', 'warn', 'error'].forEach(t => {
-        const old = console[t];
-        console[t] = (...args) => {
-            const msg = args.join(' ');
-            addVisualLog(msg, t); // Affichage local
-            pushLogToCloud(msg, t); // Envoi Cloud
-            old.apply(console, args);
-        };
-    });
-
-    // --- 3. MATRIX BACKGROUND ---
-    const mCanvas = document.getElementById('matrix-canvas');
-    const mCtx = mCanvas.getContext('2d');
-    const resizeMatrix = () => { mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight; };
-    window.addEventListener('resize', resizeMatrix); resizeMatrix();
-
-    const drops = Array(Math.floor(mCanvas.width / 16)).fill(1);
-    function drawMatrix() {
-        mCtx.fillStyle = "rgba(2, 5, 2, 0.15)";
-        mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
-        mCtx.fillStyle = "#00FF41";
-        mCtx.font = "15px monospace";
-        drops.forEach((y, i) => {
-            mCtx.fillText(Math.floor(Math.random() * 2), i * 16, y * 16);
-            if (y * 16 > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
+        // LOG HOOK
+        const logger = document.getElementById('real-console-logs');
+        ['log','warn','error'].forEach(t => {
+            const old = console[t];
+            console[t] = (...args) => {
+                const msg = args.join(' ');
+                const p = document.createElement('p');
+                p.innerHTML = `> ${msg}`;
+                if(t === 'error') p.className = "text-red-500";
+                if(logger) {
+                    logger.appendChild(p);
+                    if(logger.childNodes.length > 5) logger.removeChild(logger.firstChild);
+                }
+                old.apply(console, args);
+            };
         });
-    }
-    setInterval(drawMatrix, 50);
 
-    // --- 4. AUDIO VISUALIZER ---
-    let audioCtx, analyser, dataArray;
-    const aCanvas = document.getElementById('audio-canvas');
-    const aCtx = aCanvas.getContext('2d');
-
-    async function initAudio() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            const source = audioCtx.createMediaStreamSource(stream);
-            source.connect(analyser);
-            analyser.fftSize = 64;
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-            document.getElementById('audio-btn').innerText = "AUDIO_LINK_ACTIVE";
-            renderAudio();
-        } catch (e) { console.error("Accès micro refusé."); }
-    }
-
-    function renderAudio() {
-        aCanvas.width = aCanvas.offsetWidth; aCanvas.height = aCanvas.offsetHeight;
-        analyser.getByteFrequencyData(dataArray);
-        aCtx.clearRect(0, 0, aCanvas.width, aCanvas.height);
-        const barWidth = (aCanvas.width / dataArray.length) * 2;
-        let x = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-            const h = (dataArray[i] / 255) * aCanvas.height;
-            aCtx.fillStyle = dataArray[i] > 200 ? '#FF3131' : '#00FF41';
-            aCtx.fillRect(x, aCanvas.height - h, barWidth - 1, h);
-            x += barWidth;
-        }
-        requestAnimationFrame(renderAudio);
-    }
-
-    // --- 5. NETWORK & HARDWARE ---
-    async function initNet() {
-        try {
-            const res = await fetch('https://ipapi.co');
-            const data = await res.json();
-            document.getElementById('ip-external').innerText = data.ip;
-            document.getElementById('geo-city').innerText = data.city.toUpperCase();
-            document.getElementById('header-loc').innerText = `${data.city.toUpperCase()}, ${data.country}`;
-            document.getElementById('ip-target').classList.remove('hidden');
-        } catch (e) { console.error("Échec liaison IP."); }
-    }
-
-    function updateHardware() {
-        const cores = navigator.hardwareConcurrency || 8;
-        document.getElementById('cpu-cores').innerText = cores;
-        let usage = Math.floor(Math.random() * 30 + 40);
-        document.getElementById('cpu-usage').innerText = usage;
-        const bars = document.getElementById('cpu-bars');
-        bars.innerHTML = '';
-        for (let i = 0; i < 12; i++) {
-            const active = i < (usage / 8);
-            bars.innerHTML += `<div class="h-6 w-2 rounded-full ${active ? 'bg-green-500 shadow-[0_0_8px_#00FF41]' : 'bg-green-900/20'}"></div>`;
-        }
-        if (performance.memory) document.getElementById('stat-heap').innerText = Math.round(performance.memory.usedJSHeapSize / 1048576) + " MB";
-    }
-
-    // --- INITIALISATION FINALE ---
-    window.onload = () => {
-        // Mise à jour de l'horloge réelle
-        const updateClock = () => {
-            const now = new Date();
-            document.getElementById('system-clock').innerText = `${now.toLocaleDateString('fr-FR')} // ${now.toLocaleTimeString('fr-FR')}`;
+        // INIT
+        window.onload = () => {
+            startNexusCloud();
+            initNet();
+            setInterval(updateHardware, 2000); updateHardware();
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('system-clock').innerText = `21 JANVIER 2026 // ${now.toLocaleTimeString()}`;
+            }, 1000);
         };
-        setInterval(updateClock, 1000); updateClock();
-        
-        initNet();
-        setInterval(updateHardware, 2000); updateHardware();
-        console.log("NEXUS CORE v8.5 Opérationnel. Liaison Cloud Active.");
-    };
-</script>
-
+    </script>
 </body>
 </html>
-
-
-
-
-
-
